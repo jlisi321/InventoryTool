@@ -24,10 +24,12 @@ GRANT ALL ON SCHEMA public TO admin;
 \q
 ```
 
-Create schema:
+Create schema, load sample parts data, verify it was loaded:
 
 ```bash
 psql -U admin -d inventory -h localhost -p 5432 -f database/schema.sql
+psql -U admin -d inventory -h localhost -p 5432 -f database/sample_data.sql
+psql -U admin -d inventory -h localhost -p 5432 -c "SELECT * FROM parts;"
 ```
 
 ### NOTES 
