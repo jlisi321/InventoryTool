@@ -1,18 +1,18 @@
 CREATE TABLE parts (
-    part_number      VARCHAR(50) PRIMARY KEY,
+    part_number     VARCHAR(50) PRIMARY KEY,
     description     VARCHAR(200) NOT NULL,
-    monthly_demand   INTEGER NOT NULL CHECK (monthly_demand >= 0),
-    unit_cost        NUMERIC(12, 2) NOT NULL CHECK (unit_cost >= 0),
+    monthly_demand  INTEGER NOT NULL CHECK (monthly_demand >= 0),
+    unit_cost       NUMERIC(12, 2) NOT NULL CHECK (unit_cost >= 0),
     status          VARCHAR(20) NOT NULL CHECK (status IN ('ACTIVE', 'OBSOLETE'))
 );
 
 CREATE TABLE disposition_requests (
     id             SERIAL PRIMARY KEY,
-    part_number     VARCHAR(50) NOT NULL REFERENCES parts(part_number),
+    part_number    VARCHAR(50) NOT NULL REFERENCES parts(part_number),
     type           VARCHAR(20) NOT NULL CHECK (type IN ('STOCK', 'LAST_TIME_BUY', 'DISCONTINUE')),
     quantity       INTEGER,
     justification  VARCHAR(250),
-    status         NOT NULL DEFAULT 'DRAFT' CHECK (status IN ('DRAFT', 'SUBMITTED', 'APPROVED', 'REJECTED')),
+    status         VARCHAR(20) NOT NULL DEFAULT 'DRAFT' CHECK (status IN ('DRAFT', 'SUBMITTED', 'APPROVED', 'REJECTED')),
     created_at     TIMESTAMPTZ NOT NULL DEFAULT now(),
     updated_at     TIMESTAMPTZ NOT NULL DEFAULT now(),
 

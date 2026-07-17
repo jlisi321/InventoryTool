@@ -10,7 +10,7 @@ Inventory Tool - Rootlogik
     - Node 20+
 
 ### 1. Database setup and seed example data
-
+  - connect to Postgres database with the admin role you setup during install
 ```bash
 psql -U postgres -h localhost -p 5432
 ```
@@ -19,13 +19,15 @@ psql -U postgres -h localhost -p 5432
 CREATE DATABASE inventory;
 CREATE USER admin WITH PASSWORD 'admin123';
 GRANT ALL PRIVILEGES ON DATABASE inventory TO admin;
+\c inventory
+GRANT ALL ON SCHEMA public TO admin;
 \q
 ```
 
 Create schema:
 
 ```bash
-psql -U parts_user -d parts -h localhost -p 5432 -f db/schema.sql
+psql -U admin -d inventory -h localhost -p 5432 -f database/schema.sql
 ```
 
 ### NOTES 
