@@ -1,6 +1,7 @@
 package com.example.inventory_application.controller;
 
 import com.example.inventory_application.accessservice.DispositionRequestAccessService;
+import com.example.inventory_application.businessservice.DispositionRequestBusinessService;
 import com.example.inventory_application.dto.DispositionRequestDTO;
 import com.example.inventory_application.model.DispositionStatus;
 import com.example.inventory_application.model.DispositionType;
@@ -17,13 +18,15 @@ class DispositionsRequestsControllerTest {
 
     private DispositionRequestAccessService dispositionRequestAccessService;
     private DispositionsRequestsController dispositionsRequestsController;
+    private DispositionRequestBusinessService dispositionRequestBusinessService;
 
     @BeforeEach
     void setup() {
         dispositionRequestAccessService = mock(DispositionRequestAccessService.class);
+        dispositionRequestBusinessService = mock(DispositionRequestBusinessService.class);
 
         dispositionsRequestsController =
-                new DispositionsRequestsController(dispositionRequestAccessService);
+                new DispositionsRequestsController(dispositionRequestAccessService, dispositionRequestBusinessService);
     }
 
     @Test
@@ -50,7 +53,7 @@ class DispositionsRequestsControllerTest {
 
         assertEquals(1, results.size());
 
-        assertEquals(1L, results.getFirst().getID());
+        assertEquals(1L, results.getFirst().getId());
         assertEquals(DispositionType.LAST_TIME_BUY, results.getFirst().getType());
         assertEquals(50, results.getFirst().getQuantity());
         assertEquals("Customer demand still exists",

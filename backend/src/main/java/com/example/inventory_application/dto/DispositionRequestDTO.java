@@ -27,7 +27,7 @@ public class DispositionRequestDTO {
         this.updatedAt = updatedAt;
     }
 
-    public Long getID() {
+    public Long getId() {
         return id;
     }
 

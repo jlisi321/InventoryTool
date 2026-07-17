@@ -44,4 +44,10 @@ public class PartsAccessService {
             );
         });
     }
+
+    public boolean partExists(String partNumber) {
+        String sql = "SELECT COUNT(*) FROM parts WHERE part_number = ?";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, partNumber);
+        return count != null && count > 0;
+    }
 }
