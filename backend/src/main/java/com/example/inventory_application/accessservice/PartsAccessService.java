@@ -9,17 +9,17 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public class PartAccessService {
+public class PartsAccessService {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public PartAccessService(JdbcTemplate jdbcTemplate) {
+    public PartsAccessService(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
     public List<PartResponseDTO> listParts() {
         String sql = """
-            SELECT parts.part_number, parts.description, parts.monthly_demand, parts.unit_cost, p.status,
+            SELECT parts.part_number, parts.description, parts.monthly_demand, parts.unit_cost, parts.status,
                    disposition_requests.status AS disposition_status
             FROM parts
             LEFT JOIN disposition_requests
