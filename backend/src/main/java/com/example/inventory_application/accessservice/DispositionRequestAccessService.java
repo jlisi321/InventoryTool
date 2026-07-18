@@ -60,4 +60,48 @@ public class DispositionRequestAccessService {
                 dto.getJustification()
         );
     }
+
+    public DispositionRequestDTO findById(Long id) {
+        String sql = """
+            SELECT id, type, quantity, justification, status, created_at, updated_at
+            FROM disposition_requests
+            WHERE id = ?
+            """;
+
+        List<DispositionRequestDTO> results = jdbcTemplate.query(sql, (rs, rowNum) -> new DispositionRequestDTO(
+                        rs.getLong("id"),
+                        DispositionType.valueOf(rs.getString("type")),
+                        rs.getInt("quantity"),
+                        rs.getString("justification"),
+                        DispositionStatus.valueOf(rs.getString("status")),
+                        rs.getTimestamp("created_at").toInstant(),
+                        rs.getTimestamp("updated_at").toInstant()
+                ),
+                id
+        );
+
+        return results.isEmpty() ? null : results.getFirst();
+    }
+
+    public DispositionRequestDTO updateStatus(Long id, DispositionStatus newStatus) {
+        String sql = """
+            UPDATE disposition_requests
+            SET status = ?, updated_at = now()
+            WHERE id = ?
+            RETURNING id, type, quantity, justification, status, created_at, updated_at
+            """;
+
+        return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> new DispositionRequestDTO(
+                        rs.getLong("id"),
+                        DispositionType.valueOf(rs.getString("type")),
+                        rs.getInt("quantity"),
+                        rs.getString("justification"),
+                        DispositionStatus.valueOf(rs.getString("status")),
+                        rs.getTimestamp("created_at").toInstant(),
+                        rs.getTimestamp("updated_at").toInstant()
+                ),
+                newStatus.toString(),
+                id
+        );
+    }
 }

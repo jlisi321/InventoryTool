@@ -28,4 +28,9 @@ public class GlobalExceptionHandler {
         ErrorDTO body = new ErrorDTO(status.value(), status.getReasonPhrase(), message);
         return ResponseEntity.status(status).body(body);
     }
+
+    @ExceptionHandler(IllegalStateTransitionException.class)
+    public ResponseEntity<ErrorDTO> handleIllegalStateTransition(IllegalStateTransitionException ex) {
+        return buildResponse(HttpStatus.CONFLICT, ex.getMessage());
+    }
 }

@@ -5,6 +5,7 @@ import com.example.inventory_application.accessservice.PartsAccessService;
 import com.example.inventory_application.dto.CreateRequestDTO;
 import com.example.inventory_application.dto.DispositionRequestDTO;
 import com.example.inventory_application.exception.ActiveRequestExistsException;
+import com.example.inventory_application.exception.IllegalStateTransitionException;
 import com.example.inventory_application.exception.InvalidRequestException;
 import com.example.inventory_application.exception.PartNotFoundException;
 import com.example.inventory_application.model.DispositionStatus;
@@ -51,5 +52,50 @@ public class DispositionRequestBusinessService {
         }
 
         return false;
+    }
+
+    public DispositionRequestDTO submitRequest(Long id) {
+        DispositionRequestDTO existing = getRequestOrThrowError(id);
+
+        if (existing.getStatus() != DispositionStatus.DRAFT) {
+            throw new IllegalStateTransitionException(
+                    "Cannot submit a disposition request with status " + existing.getStatus() + "; only DRAFT requests can be submitted");
+        }
+
+        if (existing.getJustification() == null || existing.getJustification().isBlank()) {
+            throw new InvalidRequestException("A justification is required to submit a disposition request");
+        }
+
+        return dispositionRequestAccessService.updateStatus(id, DispositionStatus.SUBMITTED);
+    }
+
+    public DispositionRequestDTO approveRequest(Long id) {
+        DispositionRequestDTO existing = getRequestOrThrowError(id);
+
+        if (existing.getStatus() != DispositionStatus.SUBMITTED) {
+            throw new IllegalStateTransitionException(
+                    "Cannot approve a request with status " + existing.getStatus() + "; only SUBMITTED requests can be approved");
+        }
+
+        return dispositionRequestAccessService.updateStatus(id, DispositionStatus.APPROVED);
+    }
+
+    public DispositionRequestDTO rejectRequest(Long id) {
+        DispositionRequestDTO existing = getRequestOrThrowError(id);
+
+        if (existing.getStatus() != DispositionStatus.SUBMITTED) {
+            throw new IllegalStateTransitionException(
+                    "Cannot reject a request with status " + existing.getStatus() + "; only SUBMITTED requests can be rejected");
+        }
+
+        return dispositionRequestAccessService.updateStatus(id, DispositionStatus.REJECTED);
+    }
+
+    private DispositionRequestDTO getRequestOrThrowError(Long id) {
+        DispositionRequestDTO existing = dispositionRequestAccessService.findById(id);
+        if (existing == null) {
+            throw new InvalidRequestException("Disposition request not found: " + id);
+        }
+        return existing;
     }
 }

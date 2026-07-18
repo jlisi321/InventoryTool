@@ -37,4 +37,19 @@ public class DispositionsRequestsController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
+
+    @PatchMapping("/{id}/submit")
+    public ResponseEntity<DispositionRequestDTO> submit(@PathVariable Long id) {
+        return ResponseEntity.ok(dispositionRequestBusinessService.submitRequest(id));
+    }
+
+    @PatchMapping("/{id}/approve")
+    public ResponseEntity<DispositionRequestDTO> approve(@PathVariable Long id) {
+        return ResponseEntity.ok(dispositionRequestBusinessService.approveRequest(id));
+    }
+
+    @PatchMapping("/{id}/reject")
+    public ResponseEntity<DispositionRequestDTO> reject(@PathVariable Long id) {
+        return ResponseEntity.ok(dispositionRequestBusinessService.rejectRequest(id));
+    }
 }
