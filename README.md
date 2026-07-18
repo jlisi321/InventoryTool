@@ -115,6 +115,41 @@ Transitions state of request from `SUBMITTED` to `REJECTED`.
 
 ### 3. Frontend startup
 
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+App will run on http://localhost:5173 but make sure you have the backend already running on http://localhost:8080
+
+### Tech Stack
+
+- React / TypeScript / Vite
+- Basic plain CSS to format things somewhat proper
+- Native fetch to handle API calls
+
 ### FRONTEND RELATED NOTES 
- - I skipped API call unit testing due to time constraints but I would be unit testing every API call, but I honestly already tested these on the backend for this project which isn't sufficient for production apps but I wanted to focus on finishing
+ - I structured the app with a types folder (interfaces mirroring the DTO's from the backend), api (API functions to call backend), and components (both components that will be used on the App.tsx)
+ - I skipped front end unit testing entirely due to time constraints but I would be unit testing the components individually and the API calls
  - Obviously no auth is enforced but we would at least auth with a bearer token / login creds in dev environments and potentially go through something like apigee with OAuth or whatever production auth method desired
+
+### Where the business rules are enforced, and why
+Rule 1 - State Machine transitions
+- Enforced in the business logic since it is business logic, it's partially enforced in the front end as well based on what buttons are available at what times in the state machine
+
+Rule 2 - One active request per part
+- It is enforced inside the DB with a partial unique index in order to stop the race condition, enforced in the backend as well since it is business logic and we want clean errors to throw to the front, and enforced in the front end with the UI since the create form will be disabled until there is no active request
+
+Rule 3 - LAST_TIME_BUY requiring positive quantity 
+- Enforced in the database with a check constraint since it's a very basic data rule that doesn't seem it would change going forward, also it's not impossible a dev inserts directly into the DB for some reason even in a dev env. Again it is business logic so it's enforced in the backend, in the case our API calls are directly called. The front end also requires it for instant clean feedback.
+
+Rule 4 - Justification required to submit
+- Not enforced in the DB since this is a validation based on the state machine being transitioned, not really a data constraint. Enforced in the backend business logic in the case someone is making direct API calls, and enforced in the front end with the input being required. 
+
+### What I would have done next
+ - I would have wrote front end unit tests for the components and API calls
+ - I would have finished more controller and access testing on the backend
+ - I would have done one of the stretch goals, most likely the LAST_TIME_BUY cost estimate since it doesn't seem much to add
+ - Auth would have been a big one to add given this was going towards a production app but that was out of scope
+ - Adding some nice UX libraries would have been nice to make it look nice but also out of scope

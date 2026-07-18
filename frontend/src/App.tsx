@@ -4,7 +4,7 @@ import "./App.css";
 function App() {
   return (
       <div>
-        <h1>Parts Disposition Tool</h1>
+        <h1>Inventory Tool</h1>
         <PartsList />
       </div>
   );
