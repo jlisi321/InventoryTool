@@ -111,6 +111,7 @@ Transitions state of request from `SUBMITTED` to `REJECTED`.
  - All state machine logic is inside the business service disposition class since this is business logic
  - The logic for having one active request per part is enforced in the DB but I also reenforced it inside the business logic so that the front end can be given clear errors
  - The LAST_TIME_BUY logic is enforced in the DB but I also enforced it inside the business logic again for clean exceptions
+ - added CORS rules to allow the react frontend to make all necessary API calls. In prod app this would obviously be much more strict rules.
 
 ### 3. Frontend startup
 
