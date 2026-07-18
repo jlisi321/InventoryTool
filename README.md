@@ -40,7 +40,7 @@ psql -U admin -d inventory -h localhost -p 5432 -c "SELECT * FROM disposition_re
  - I created a unique partial index in disposition request on part number where status is draft or submitted in order to enforce one active disposition at a time. I will also add backend business logic to cover this in order to provide a clear error but this unique index will cover the race conditions that backend can't cover easily
  - lastly I added a full index on part number inside disposition requests table to speed up the queries since ID is the primary key, i could imagine inside a production app there could be millions of disposition requests... sequential look ups could be a very long look up. No full index needs to be added on the parts table since part_number is already the primary key
 
-2. Backend startup
+### 2. Backend startup
 
 ```bash
 cd backend
@@ -111,3 +111,9 @@ Transitions state of request from `SUBMITTED` to `REJECTED`.
  - All state machine logic is inside the business service disposition class since this is business logic
  - The logic for having one active request per part is enforced in the DB but I also reenforced it inside the business logic so that the front end can be given clear errors
  - The LAST_TIME_BUY logic is enforced in the DB but I also enforced it inside the business logic again for clean exceptions
+
+### 3. Frontend startup
+
+### FRONTEND RELATED NOTES 
+ - I skipped API call unit testing due to time constraints but I would be unit testing every API call, but I honestly already tested these on the backend for this project which isn't sufficient for production apps but I wanted to focus on finishing
+ - Obviously no auth is enforced but we would at least auth with a bearer token / login creds in dev environments and potentially go through something like apigee with OAuth or whatever production auth method desired
